@@ -1,5 +1,7 @@
 .venv
+.env
 db.sqlite3
 *__pycache__
 *migrations
 settings/settings_dev.py
+hyper_2

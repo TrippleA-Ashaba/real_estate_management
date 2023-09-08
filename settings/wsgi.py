@@ -17,7 +17,7 @@ load_dotenv()
 if os.environ.get("DJANGO_ENV") == "development":
     settings = "settings.settings_dev"
 else:
-    settings = "settings.settings"
+    settings = "settings.settings_dev"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings)
 

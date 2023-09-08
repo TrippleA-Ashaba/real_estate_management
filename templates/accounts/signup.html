@@ -21,7 +21,9 @@
 			</p>
 		</div>
 
-		<form action="#">
+		<form action="{% url 'signup' %}" method="post">
+			{% csrf_token %}
+			<!--  -->
 			{{ form|crispy }}
 			<div class="mb-3 text-center">
 				<button class="btn btn-primary" type="submit">Sign Up</button>
@@ -36,7 +38,7 @@
 	<div class="col-12 text-center">
 		<p class="text-muted">
 			Already have account?
-			<a href="pages-login.html" class="text-muted ms-1"><b>Log In</b></a>
+			<a href="{% url 'login' %}" class="text-muted ms-1"><b>Log In</b></a>
 		</p>
 	</div>
 	<!-- end col-->

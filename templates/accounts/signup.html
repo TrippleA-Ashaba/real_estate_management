@@ -1,12 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
-	</head>
-	<body>
-		SignUp
-		<form action="">{{form}}</form>
-	</body>
-</html>
+{% extends 'accounts/base.html' %}
+<!--  -->
+{% load static %}
+<!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
+{% block content %}
+<div class="card">
+	<!-- Logo-->
+	<div class="card-header pt-4 pb-4 text-center bg-primary">
+		<a href="index.html">
+			<span><img src="{% static 'assets/images/logo.png' %}" alt="logo" height="22" /></span>
+		</a>
+	</div>
+
+	<div class="card-body p-4">
+		<div class="text-center w-75 m-auto">
+			<h4 class="text-dark-50 text-center mt-0 fw-bold">Free Sign Up</h4>
+			<p class="text-muted mb-4">
+				Don't have an account? Create your account, it takes less than a minute
+			</p>
+		</div>
+
+		<form action="#">
+			{{ form|crispy }}
+			<div class="mb-3 text-center">
+				<button class="btn btn-primary" type="submit">Sign Up</button>
+			</div>
+		</form>
+	</div>
+	<!-- end card-body -->
+</div>
+<!-- end card -->
+
+<div class="row mt-3">
+	<div class="col-12 text-center">
+		<p class="text-muted">
+			Already have account?
+			<a href="pages-login.html" class="text-muted ms-1"><b>Log In</b></a>
+		</p>
+	</div>
+	<!-- end col-->
+</div>
+<!-- end row -->
+
+{% endblock content %}

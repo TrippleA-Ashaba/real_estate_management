@@ -1,9 +1,47 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
+<!--  -->
+{% load static %}
 <!--  -->
 {% load crispy_forms_tags %}
 <!--  -->
+
 {% block content %}
-<div>
-	<form action="">{{form|crispy}}</form>
+<div class="card">
+	<!-- Logo -->
+	<div class="card-header pt-4 pb-4 text-center bg-primary">
+		<a href="index.html">
+			<span><img src="{% static 'assets/images/logo.png' %}" alt="logo" height="22" /></span>
+		</a>
+	</div>
+
+	<div class="card-body p-4">
+		<div class="text-center w-75 m-auto">
+			<h4 class="text-dark-50 text-center pb-0 fw-bold">Sign In</h4>
+			<p class="text-muted mb-4">
+				Enter your email address and password to access admin panel.
+			</p>
+		</div>
+
+		<form action="#">
+			{{ form|crispy }}
+			<div class="mb-3 mb-0 text-center">
+				<button class="btn btn-primary" type="submit">Log In</button>
+			</div>
+		</form>
+	</div>
+	<!-- end card-body -->
 </div>
+<!-- end card -->
+
+<div class="row mt-3">
+	<div class="col-12 text-center">
+		<p class="text-muted">
+			Don't have an account?
+			<a href="{% url 'signup' %}" class="text-muted ms-1"><b>Sign Up</b></a>
+		</p>
+	</div>
+	<!-- end col -->
+</div>
+<!-- end row -->
+
 {% endblock content %}

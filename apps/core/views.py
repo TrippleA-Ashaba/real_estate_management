@@ -1,8 +1,17 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .forms import BusinessCreationForm
 
 
 # Create your views here.
-@login_required
 def dashboard(request):
     return render(request, "core/dashboard.html")
+
+
+@login_required
+def create_business(request):
+    form = BusinessCreationForm()
+    context = {
+        "form": form,
+    }
+    return render(request, "core/create_business.html", context)

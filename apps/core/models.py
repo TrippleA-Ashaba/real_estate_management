@@ -7,6 +7,7 @@ User = get_user_model()
 class Business(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Admin(models.Model):
@@ -21,9 +22,11 @@ class Staff(models.Model):
 
 
 class ProjectStatus(models.TextChoices):
-    NOTSTARTED = "not_started", "not_started"
-    INPROGRESS = "in_progress", "in_progress"
-    CANCELLED = "cancelled", "cancelled"
+    BACKLOG = "backlog", "backlog"
+    PLANNED = "planned", "planned"
+    IN_PROGRESS = "in_progress", "in progress"
+    PAUSED = "paused", "paused"
+    CANCELED = "canceled", "canceled"
     COMPLETED = "completed", "completed"
     SOLD = "sold", "sold"
 
@@ -36,8 +39,9 @@ class Project(models.Model):
     description = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     status = models.CharField(
-        max_length=255, choices=ProjectStatus.choices, default=ProjectStatus.NOTSTARTED
+        max_length=255, choices=ProjectStatus.choices, default=ProjectStatus.BACKLOG
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class ProjectContactPerson(models.Model):
@@ -89,6 +93,7 @@ class ProjectSales(models.Model):
     )
     amount = models.PositiveIntegerField()
     period = models.PositiveIntegerField()
+    settled = models.BooleanField(default=False)
 
 
 class ProjectPayments(models.Model):

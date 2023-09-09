@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -6,7 +7,7 @@ from django.views.generic import CreateView
 from .forms import LoginForm, SignUpForm
 
 
-class SignUpView(CreateView):
+class SignUpView(LoginRequiredMixin, CreateView):
     template_name = "accounts/signup.html"
     form_class = SignUpForm
     success_url = reverse_lazy("dashboard")

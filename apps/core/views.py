@@ -8,7 +8,6 @@ def dashboard(request):
     return render(request, "core/dashboard.html")
 
 
-@login_required
 def create_business(request):
     form = BusinessCreationForm()
     context = {

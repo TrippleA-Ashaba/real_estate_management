@@ -63,7 +63,6 @@ class ProjectContactPerson(models.Model):
     email = models.EmailField(max_length=255)
     phone_number = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
-    status = models.CharField(max_length=255)
 
 
 class ProjectBudget(models.Model):

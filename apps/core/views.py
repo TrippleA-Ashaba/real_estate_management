@@ -72,3 +72,8 @@ def add_project(request, id):
             project.save()
 
     return redirect("projects")
+
+
+def project_detail(request, id):
+    context = {}
+    return render(request, "core/project_detail.html", context)

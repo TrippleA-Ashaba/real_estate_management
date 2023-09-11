@@ -1,6 +1,8 @@
 from django.contrib import admin
+
 from .models import (
     Business,
+    BusinessAdmin,
     Project,
     ProjectBudget,
     ProjectContactPerson,
@@ -8,8 +10,6 @@ from .models import (
     ProjectExpense,
     ProjectPayments,
     ProjectSales,
-    ProjectStatus,
-    Admin,
     Staff,
 )
 
@@ -21,5 +21,5 @@ admin.site.register(ProjectCustomer)
 admin.site.register(ProjectExpense)
 admin.site.register(ProjectPayments)
 admin.site.register(ProjectSales)
-admin.site.register(Admin)
+admin.site.register(BusinessAdmin)
 admin.site.register(Staff)

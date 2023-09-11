@@ -1,24 +1,29 @@
-from django.db import models
 from django.contrib.auth import get_user_model
-import datetime
+from django.db import models
 
 User = get_user_model()
 
 
 class Business(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.name
 
-class Admin(models.Model):
+
+class BusinessAdmin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    business = models.OneToOneField(
+        Business, on_delete=models.CASCADE, related_name="admin"
+    )
 
 
 class Staff(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    role = models.CharField(max_length=50)
     can_login = models.BooleanField(default=False)
 
 
@@ -42,7 +47,11 @@ class Project(models.Model):
     status = models.CharField(
         max_length=255, choices=ProjectStatus.choices, default=ProjectStatus.BACKLOG
     )
+    start_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
 
 class ProjectContactPerson(models.Model):

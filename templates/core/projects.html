@@ -223,9 +223,9 @@
 						<thead>
 							<tr>
 								<th scope="col">Project Name</th>
-								<th scope="col">Description</th>
 								<th scope="col">Location</th>
-								<th scope="col">Start date</th>
+								<th scope="col">Start Date</th>
+								<th scope="col">End Date</th>
 								<th scope="col">Status</th>
 								<th scope="col">Action</th>
 							</tr>
@@ -238,9 +238,9 @@
 										{{ project }}
 									</a>
 								</td>
-								<td>{{ project.description|truncatechars:10}}</td>
 								<td>{{ project.location|truncatechars:20 }}</td>
 								<td>{{ project.start_date|date:'M d, Y' }}</td>
+								<td>{{ project.end_date|date:'M d, Y' }}</td>
 
 								<td>
 									{% if project.status == 'backlog' %}
@@ -273,23 +273,27 @@
 									>
 									{% endif %}
 								</td>
-								<td>
+								<td class="d-flex">
 									<a
-										href="javascript:void(0);"
+										href="{% url 'project_edit' project.id %}"
 										class="font-18 text-info me-2"
 										data-bs-toggle="tooltip"
 										data-bs-placement="top"
 										title="Edit"
 										><i class="uil uil-pen"></i
 									></a>
-									<a
-										href="javascript:void(0);"
-										class="font-18 text-danger"
-										data-bs-toggle="tooltip"
-										data-bs-placement="top"
-										title="Delete"
-										><i class="uil uil-trash"></i
-									></a>
+									<form
+										action="{% url 'project_delete' project.id %}"
+										method="post">
+										{% csrf_token %}
+										<button
+											class="btn btn-sm btn-outline-light"
+											data-bs-toggle="tooltip"
+											data-bs-placement="top"
+											title="Delete">
+											<i class="uil uil-trash text-danger"></i>
+										</button>
+									</form>
 								</td>
 							</tr>
 							<!-- end tr -->

@@ -75,6 +75,25 @@ def projects(request):
     return render(request, "core/projects.html", context)
 
 
+def project_edit(request, id):
+    project = get_object_or_404(Project, id=id)
+    form = ProjectCreationForm(instance=project)
+    if request.method == "POST":
+        form = ProjectCreationForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect("projects")
+    context = {"form": form, "project": project}
+    return render(request, "core/project_edit.html", context)
+
+
+def project_delete(request, id):
+    if request.method == "POST":
+        project = Project.objects.get(id=id)
+        project.delete()
+        return redirect("projects")
+
+
 def add_project(request, id):
     business = get_object_or_404(Business, id=id)
     if request.method == "POST":
@@ -156,3 +175,24 @@ def add_expense(request, id):
             expense.project = project
             expense.save()
             return redirect("project_detail", id=project.id)
+
+
+def expense_edit(request, id):
+    expense = get_object_or_404(ProjectExpense, id=id)
+    project = get_object_or_404(Project, id=expense.project.id)
+    form = ProjectExpenseForm(instance=expense)
+    if request.method == "POST":
+        form = ProjectExpenseForm(request.POST, instance=expense)
+        if form.is_valid():
+            form.save()
+            return redirect("project_detail", id=expense.project.id)
+    context = {"form": form, "expense": expense, "project": project}
+    return render(request, "core/expense_edit.html", context)
+
+
+def expense_delete(request, id):
+    if request.method == "POST":
+        expense = ProjectExpense.objects.get(id=id)
+        project = Project.objects.get(id=expense.project.id)
+        expense.delete()
+        return redirect("project_detail", id=project.id)

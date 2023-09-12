@@ -8,7 +8,9 @@ from .models import Business, BusinessAdmin, Project
 
 # Create your views here.
 def dashboard(request):
-    return render(request, "core/dashboard.html")
+    business = Business.objects.get(admin__user=request.user)
+    context = {"business": business}
+    return render(request, "core/dashboard.html", context)
 
 
 def businesses(request):

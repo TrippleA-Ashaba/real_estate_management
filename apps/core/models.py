@@ -42,12 +42,13 @@ class Project(models.Model):
         Business, related_name="projects", on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
     location = models.CharField(max_length=255)
     status = models.CharField(
         max_length=255, choices=ProjectStatus.choices, default=ProjectStatus.BACKLOG
     )
     start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

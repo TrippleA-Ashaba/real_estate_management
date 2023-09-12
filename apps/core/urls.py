@@ -13,6 +13,7 @@ from .views import (
     project_delete,
     expense_edit,
     expense_delete,
+    expenses,
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
     path("add_expense/<int:id>/", add_expense, name="add_expense"),
     path("expense_edit/<int:id>/", expense_edit, name="expense_edit"),
     path("expense_delete/<int:id>/", expense_delete, name="expense_delete"),
+    path("expenses", expenses, name="expenses"),
 ]

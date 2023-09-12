@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+<!--  -->
+{% load static %}
+<!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
+{% load math_filters %}
+<!--  -->
+{% block content %}
+<!-- start page title -->
+<div class="row">
+	<div class="col-12">
+		<div class="page-title-box">
+			<h4 class="page-title">Expenses</h4>
+		</div>
+	</div>
+</div>
+<!-- end page title -->
+
+<div class="row">
+	<div class="col-xxl-6">
+		<div class="card">
+			<div class="card-header d-flex justify-content-between align-items-center"></div>
+
+			<div class="card-body pt-0">
+				<div class="row mb-3">
+					<div class="col-xl-8">
+						<form
+							class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
+							<div class="col-auto">
+								<label for="inputPassword2" class="visually-hidden">Search</label>
+								<input
+									type="search"
+									class="form-control"
+									id="inputPassword2"
+									placeholder="Search..." />
+							</div>
+							<div class="col-auto">
+								<div class="d-flex align-items-center">
+									<label for="status-select" class="me-2">Status</label>
+									<select class="form-select" id="status-select">
+										<option selected>Choose...</option>
+										<option value="1">Paid</option>
+										<option value="2">Awaiting Authorization</option>
+										<option value="3">Payment Failed</option>
+										<option value="4">Cash On Delivery</option>
+										<option value="5">Fulfilled</option>
+										<option value="6">Unfulfilled</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="col-xl-4"></div>
+					<!-- end col-->
+				</div>
+				<div class="table-responsive mt-n2">
+					<table class="table table-centered table-hover table-nowrap mb-0">
+						<thead>
+							<tr>
+								<th scope="col">Project</th>
+								<th scope="col">Item</th>
+								<th scope="col">Supplier</th>
+								<th scope="col">Order Date</th>
+								<th scope="col">Quantity</th>
+								<th scope="col">Cost</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for expense in expenses %}
+							<tr>
+								<td>{{ expense.project }}</td>
+								<td>{{ expense.item|truncatechars:25 }}</td>
+								<td>{{ expense.supplier|truncatechars:20 }}</td>
+								<td>{{ expense.created_at|date:'M d, Y' }}</td>
+								<td>{{ expense.quantity }}</td>
+								<td>{{ expense.quantity|multiply:expense.unit_price }}</td>
+							</tr>
+							<!-- end tr -->
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- end col -->
+</div>
+
+<!-- Signup modal content -->
+<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form class="ps-3 pe-3" action="" method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Add Project</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+{% endblock %}

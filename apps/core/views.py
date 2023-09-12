@@ -68,10 +68,16 @@ def projects(request):
 
     if business:
         projects = Project.objects.filter(business=business)
+        project_count = projects.count()
 
     print(business)
     form = ProjectCreationForm()
-    context = {"form": form, "projects": projects, "business": business}
+    context = {
+        "form": form,
+        "projects": projects,
+        "business": business,
+        "project_count": project_count,
+    }
     return render(request, "core/projects.html", context)
 
 
@@ -196,3 +202,16 @@ def expense_delete(request, id):
         project = Project.objects.get(id=expense.project.id)
         expense.delete()
         return redirect("project_detail", id=project.id)
+
+
+def expenses(request):
+    business = get_object_or_404(Business, admin__user=request.user)
+    expenses = ProjectExpense.objects.filter(project__business=business)
+
+    context = {"expenses": expenses}
+    return render(request, "core/expenses.html", context)
+
+
+def project_sale(request):
+    context = {}
+    return render(request, "core/project_sale.html", context)

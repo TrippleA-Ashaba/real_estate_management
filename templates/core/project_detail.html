@@ -39,33 +39,14 @@
 					<div class="card-body">
 						<div class="d-flex justify-content-between align-items-center mb-2">
 							<h3 class="">{{ project }}</h3>
-							<div class="dropdown">
+							<div>
 								<a
-									href="#"
-									class="dropdown-toggle arrow-none card-drop"
-									data-bs-toggle="dropdown"
-									aria-expanded="false">
-									<i class="ri-more-fill"></i>
-								</a>
-								<div class="dropdown-menu dropdown-menu-end">
-									<!-- item-->
-									<a href="javascript:void(0);" class="dropdown-item"
-										><i class="mdi mdi-pencil me-1"></i>Edit</a
-									>
-									<!-- item-->
-									<a href="javascript:void(0);" class="dropdown-item"
-										><i class="mdi mdi-delete me-1"></i>Delete</a
-									>
-									<!-- item-->
-									<a href="javascript:void(0);" class="dropdown-item"
-										><i class="mdi mdi-email-outline me-1"></i>Invite</a
-									>
-									<!-- item-->
-									<a href="javascript:void(0);" class="dropdown-item"
-										><i class="mdi mdi-exit-to-app me-1"></i>Leave</a
-									>
-								</div>
+									href="{% url 'project_sale_detail' project.id %}"
+									class="btn btn-lg btn-warning text-light"
+									>Sell</a
+								>
 							</div>
+
 							<!-- project title-->
 						</div>
 						{% if project.status == 'backlog' %}

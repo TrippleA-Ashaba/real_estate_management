@@ -14,6 +14,9 @@ from .views import (
     expense_edit,
     expense_delete,
     expenses,
+    project_sale,
+    project_customer_add,
+    project_sale_detail,
 )
 
 urlpatterns = [
@@ -30,4 +33,13 @@ urlpatterns = [
     path("expense_edit/<int:id>/", expense_edit, name="expense_edit"),
     path("expense_delete/<int:id>/", expense_delete, name="expense_delete"),
     path("expenses", expenses, name="expenses"),
+    path(
+        "project_sale_detail/<int:id>/", project_sale_detail, name="project_sale_detail"
+    ),
+    path(
+        "project_customer_add/<int:id>/",
+        project_customer_add,
+        name="project_customer_add",
+    ),
+    path("project_sale/<int:id>/", project_sale, name="project_sale"),
 ]

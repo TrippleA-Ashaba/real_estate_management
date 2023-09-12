@@ -6,6 +6,8 @@ from .models import (
     ProjectBudget,
     ProjectContactPerson,
     ProjectExpense,
+    ProjectCustomer,
+    ProjectSales,
 )
 
 
@@ -42,3 +44,15 @@ class ProjectExpenseForm(forms.ModelForm):
     class Meta:
         model = ProjectExpense
         exclude = ("project",)
+
+
+class ProjectCustomerForm(forms.ModelForm):
+    class Meta:
+        model = ProjectCustomer
+        exclude = ("project",)
+
+
+class ProjectSalesForm(forms.ModelForm):
+    class Meta:
+        model = ProjectSales
+        exclude = ("project", "customer")

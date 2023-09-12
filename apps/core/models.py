@@ -92,14 +92,17 @@ class ProjectExpense(models.Model):
 
 
 class ProjectCustomer(models.Model):
-    project = models.ForeignKey(
-        Project, related_name="customers", on_delete=models.CASCADE
+    project = models.OneToOneField(
+        Project, related_name="customer", on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
-    phone = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     nin = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
 class ProjectSales(models.Model):

@@ -8,6 +8,8 @@ from .forms import (
     ProjectContactPersonForm,
     ProjectCreationForm,
     ProjectExpenseForm,
+    ProjectCustomerForm,
+    ProjectSalesForm,
 )
 from .models import (
     Business,
@@ -16,6 +18,7 @@ from .models import (
     ProjectBudget,
     ProjectContactPerson,
     ProjectExpense,
+    ProjectCustomer,
 )
 
 # Create your views here.
@@ -212,6 +215,53 @@ def expenses(request):
     return render(request, "core/expenses.html", context)
 
 
-def project_sale(request):
-    context = {}
+def project_sale_detail(request, id):
+    project = get_object_or_404(Project, id=id)
+
+    try:
+        customer = project.customer
+    except Project.customer.RelatedObjectDoesNotExist:
+        customer = None
+    try:
+        sales = project.sales
+    except Project.sales.RelatedObjectDoesNotExist:
+        sales = None
+
+    customer_form = ProjectCustomerForm(instance=customer)
+    sales_form = ProjectSalesForm()
+
+    context = {
+        "project": project,
+        "customer_form": customer_form,
+        "sales_form": sales_form,
+        "customer": customer,
+        "sales": sales,
+    }
     return render(request, "core/project_sale.html", context)
+
+
+def project_customer_add(request, id):
+    if request.method == "POST":
+        project = get_object_or_404(Project, id=id)
+        form = ProjectCustomerForm(request.POST)
+        if form.is_valid():
+            customer, created = ProjectCustomer.objects.get_or_create(
+                project=project, defaults=form.cleaned_data
+            )
+            if not created:
+                for field, value in form.cleaned_data.items():
+                    setattr(customer, field, value)
+                customer.save()
+            return redirect("project_sale_detail", id=id)
+
+
+def project_sale(request, id):
+    if request.method == "POST":
+        form = ProjectSalesForm(request.POST)
+        project = get_object_or_404(Project, id=id)
+        if form.is_valid():
+            sale = form.save(commit=False)
+            sale.project = project
+            sale.customer = project.customer
+            sale.save()
+            return redirect("project_sale_detail", id=id)

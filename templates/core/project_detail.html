@@ -4,6 +4,8 @@
 <!--  -->
 {% load crispy_forms_tags %}
 <!--  -->
+{% load math_filters %}
+<!--  -->
 {% block content %}
 
 <div class="content">
@@ -36,7 +38,7 @@
 				<div class="card d-block">
 					<div class="card-body">
 						<div class="d-flex justify-content-between align-items-center mb-2">
-							<h3 class="">App design and development</h3>
+							<h3 class="">{{ project }}</h3>
 							<div class="dropdown">
 								<a
 									href="#"
@@ -66,74 +68,120 @@
 							</div>
 							<!-- project title-->
 						</div>
-						<div class="badge bg-secondary text-light mb-3">Ongoing</div>
+						{% if project.status == 'backlog' %}
+						<div class="badge bg-secondary text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'planned' %}
+						<div class="badge bg-warning text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'sold' %}
+						<div class="badge bg-success text-white mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'paused' %}
+						<div class="badge bg-secondary-lighten text-dark mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'completed' %}
+						<div class="badge bg-success text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'canceled' %}
+						<div class="badge bg-danger text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% else %}
+						<div class="badge bg-primary text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% endif %}
 
 						<h5>Project Overview:</h5>
 
-						<p class="text-muted mb-2">
-							With supporting text below as a natural lead-in to additional
-							contenposuere erat a ante. Voluptates, illo, iste itaque voluptas
-							corrupti ratione reprehenderit magni similique? Tempore, quos delectus
-							asperiores libero voluptas quod perferendis! Voluptate, quod illo rerum?
-							Lorem ipsum dolor sit amet.
-						</p>
-
-						<p class="text-muted mb-4">
-							Voluptates, illo, iste itaque voluptas corrupti ratione reprehenderit
-							magni similique? Tempore, quos delectus asperiores libero voluptas quod
-							perferendis! Voluptate, quod illo rerum? Lorem ipsum dolor sit amet.
-							With supporting text below as a natural lead-in to additional
-							contenposuere erat a ante.
-						</p>
+						<p class="text-muted mb-2">{{ project.description }}</p>
 
 						<div class="row">
 							<div class="col-md-4">
 								<div class="mb-4">
 									<h5>Start Date</h5>
-									<p>
-										17 March 2018
-										<small class="text-muted">1:00 PM</small>
-									</p>
+									<p>{{ project.start_date|date:'M d, Y'}}</p>
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="mb-4">
 									<h5>End Date</h5>
-									<p>
-										22 December 2018
-										<small class="text-muted">1:00 PM</small>
-									</p>
+									<p>{{ project.start_date|date:'M d, Y' }}</p>
 								</div>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-4 d-flex align-items-center gap-4">
 								<div class="mb-4">
 									<h5>Budget</h5>
-									<p>$15,800</p>
+									{% if budget %}
+									<p>Ugx {{ budget|floatformat:"2g" }}</p>
+									{% else %}
+									<p>Ugx 0.00</p>
+									{% endif %}
+								</div>
+								<div class="mb-4">
+									<button
+										class="btn btn-soft-danger btn-sm"
+										data-bs-toggle="modal"
+										data-bs-target="#budget-modal">
+										Edit Budget
+									</button>
 								</div>
 							</div>
 						</div>
 						<div class="mb-4">
-							<h4 class="header-title mb-3">Contact Person:</h4>
+							<div class="mb-3 d-flex align-items-center gap-5">
+								<h4 class="header-title mb-2">Contact Person:</h4>
+								<button
+									class="btn btn-soft-danger btn-sm"
+									data-bs-toggle="modal"
+									data-bs-target="#contact-modal">
+									Add Contact Person
+								</button>
+							</div>
+							<div class="d-flex flex-wrap gap-2 align-items-center">
+								{% if contact_persons %}
+								<!--  -->
+								{% for person in contact_persons %}
+								<div style="width: 300px">
+									<h5 class="fs-4">{{ person }}</h5>
 
-							<h5>Stanley Jones</h5>
-
-							<ul class="list-unstyled mb-0">
-								<li>
-									<p class="mb-2">
-										<span class="fw-bold me-2">Payment Type:</span> Credit Card
-									</p>
-									<p class="mb-2">
-										<span class="fw-bold me-2">Provider:</span> Visa ending in
-										2851
-									</p>
-									<p class="mb-2">
-										<span class="fw-bold me-2">Valid Date:</span> 02/2020
-									</p>
-									<p class="mb-0"><span class="fw-bold me-2">CVV:</span> xxx</p>
-								</li>
-							</ul>
+									<ul class="list-unstyled mb-0">
+										<li>
+											<p class="mb-2">
+												<span class="fw-semibold me-2">Job Title:</span>
+												<!--  -->
+												{{ person.designation }}
+											</p>
+											<p class="mb-2">
+												<span class="fw-semibold me-2">Email:</span>
+												<!--  -->
+												{{ person.email }}
+											</p>
+											<p class="mb-2">
+												<span class="fw-semibold me-2">Phone Number:</span>
+												<!--  -->
+												{{ person.phone_number }}
+											</p>
+											<p class="mb-0">
+												<span class="fw-semibold me-2">Address:</span>
+												<!--  -->
+												{{ person.address }}
+											</p>
+										</li>
+									</ul>
+								</div>
+								{% endfor %}
+								<!--  -->
+								{% endif %}
+							</div>
 						</div>
-						<div id="tooltip-container">
+						<!-- <div id="tooltip-container">
 							<h5>Staff Members:</h5>
 							<a
 								href="javascript:void(0);"
@@ -212,7 +260,7 @@
 									class="rounded-circle img-thumbnail avatar-sm"
 									alt="friend" />
 							</a>
-						</div>
+						</div> -->
 					</div>
 					<!-- end card-body-->
 				</div>
@@ -259,7 +307,11 @@
 							</div>
 							<div class="col-xl-4">
 								<div class="text-xl-end mt-xl-0 mt-2">
-									<button type="button" class="btn btn-danger mb-2 me-2">
+									<button
+										type="button"
+										class="btn btn-danger mb-2 me-2"
+										data-bs-toggle="modal"
+										data-bs-target="#expense-modal">
 										<i class="mdi mdi-basket me-1"></i> Add New Expense
 									</button>
 									<button type="button" class="btn btn-light mb-2">Export</button>
@@ -272,74 +324,27 @@
 							<table class="table table-centered table-nowrap mb-0">
 								<thead class="table-light">
 									<tr>
-										<th style="width: 20px">
-											<div class="form-check">
-												<input
-													type="checkbox"
-													class="form-check-input"
-													id="customCheck1" />
-												<label class="form-check-label" for="customCheck1"
-													>&nbsp;</label
-												>
-											</div>
-										</th>
-										<th>Order ID</th>
-										<th>Customers</th>
-										<th>Project</th>
-										<th>Address</th>
-										<th>Date Order</th>
-										<th>Order Status</th>
+										<th>Order Date</th>
+										<th>Item</th>
+										<th>Description</th>
+										<th>Quantity</th>
+										<th>Unit Price</th>
+										<th>Total</th>
 										<th style="width: 125px">Action</th>
 									</tr>
 								</thead>
 								<tbody>
+									{% for expense in expenses %}
 									<tr>
+										<td>{{ expense.created_at }}</td>
+
 										<td>
-											<div class="form-check">
-												<input
-													type="checkbox"
-													class="form-check-input"
-													id="customCheck2" />
-												<label class="form-check-label" for="customCheck2"
-													>&nbsp;</label
-												>
-											</div>
+											<span class="fw-bold"> {{ expense.item }}</span>
 										</td>
-										<td>
-											<a
-												href="apps-ecommerce-orders-details.html"
-												class="text-body fw-bold"
-												>#CM9708</a
-											>
-										</td>
-										<td>
-											<div class="d-flex">
-												<div class="d-flex align-items-center">
-													<div class="flex-shrink-0">
-														<img
-															src="{% static 'assets/images/users/avatar-1.jpg' %}"
-															class="rounded-circle avatar-xs"
-															alt="friend" />
-													</div>
-													<div class="flex-grow-1 ms-2">
-														<h5 class="my-0">Jerry Geiger</h5>
-													</div>
-												</div>
-											</div>
-										</td>
-										<td>Landing Page</td>
-										<td>
-											<h5 class="my-0">New York</h5>
-											<p class="mb-0 txt-muted">Meadow Lane Oakland</p>
-										</td>
-										<td>01 January 2022</td>
-										<td>
-											<h5 class="my-0">
-												<span class="badge badge-info-lighten"
-													>In Progress</span
-												>
-											</h5>
-										</td>
+										<td>{{ expense.description }}</td>
+										<td>{{ expense.quantity }}</td>
+										<td>{{ expense.unit_price }}</td>
+										<td>{{ expense.quantity|multiply:expense.unit_price}}</td>
 										<td>
 											<a href="javascript:void(0);" class="action-icon">
 												<i class="mdi mdi-square-edit-outline"></i
@@ -349,6 +354,7 @@
 											></a>
 										</td>
 									</tr>
+									{% endfor %}
 								</tbody>
 							</table>
 						</div>
@@ -364,5 +370,127 @@
 	<!-- container -->
 </div>
 <!-- content -->
+
+<!-- Signup modal content -->
+<div id="budget-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form class="ps-3 pe-3" action="{% url 'edit_budget' project.id %}" method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ budget_form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+
+<div id="contact-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form
+					class="ps-3 pe-3"
+					action="{% url 'add_contact_person' project.id %}"
+					method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ contact_person_form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!--  -->
+
+<div id="expense-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form class="ps-3 pe-3" action="{% url 'add_expense' project.id %}" method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ expense_form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
 
 {% endblock %}

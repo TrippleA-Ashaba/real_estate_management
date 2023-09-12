@@ -10,7 +10,7 @@ from .forms import LoginForm, SignUpForm
 class SignUpView(LoginRequiredMixin, CreateView):
     template_name = "accounts/signup.html"
     form_class = SignUpForm
-    success_url = reverse_lazy("dashboard")
+    success_url = reverse_lazy("/")
 
     def form_valid(self, form):
         # Call the parent class's form_valid method to save the user
@@ -32,9 +32,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect(
-                "dashboard"
-            )  # Replace 'home' with the URL name of your home page
+            return redirect("/")  # Replace 'home' with the URL name of your home page
     else:
         form = LoginForm()
     return render(request, "accounts/login.html", {"form": form})

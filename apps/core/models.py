@@ -59,28 +59,36 @@ class ProjectContactPerson(models.Model):
     project = models.ForeignKey(
         Project, related_name="contact_persons", on_delete=models.CASCADE
     )
-    name = models.CharField(max_length=255)
-    designation = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255)
-    phone_number = models.CharField(max_length=255)
-    address = models.CharField(max_length=255)
+    name = models.CharField(max_length=50)
+    designation = models.CharField(max_length=50)
+    email = models.EmailField(max_length=50)
+    phone_number = models.CharField(max_length=50)
+    address = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class ProjectBudget(models.Model):
     project = models.OneToOneField(
         Project, related_name="budget", on_delete=models.CASCADE
     )
-    amount = models.PositiveIntegerField()
+    amount = models.PositiveIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.amount}"
 
 
 class ProjectExpense(models.Model):
     project = models.ForeignKey(
         Project, related_name="expenses", on_delete=models.CASCADE
     )
-    item = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    item = models.CharField(max_length=50)
+    description = models.CharField(max_length=50)
     quantity = models.PositiveIntegerField()
-    amount = models.PositiveIntegerField()
+    unit_price = models.PositiveIntegerField()
+    supplier = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class ProjectCustomer(models.Model):

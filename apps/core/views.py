@@ -2,15 +2,27 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.accounts.forms import SignUpForm
 
-from .forms import BusinessCreationForm, ProjectCreationForm
-from .models import Business, BusinessAdmin, Project
-
+from .forms import (
+    BusinessCreationForm,
+    ProjectBudgetForm,
+    ProjectContactPersonForm,
+    ProjectCreationForm,
+    ProjectExpenseForm,
+)
+from .models import (
+    Business,
+    BusinessAdmin,
+    Project,
+    ProjectBudget,
+    ProjectContactPerson,
+    ProjectExpense,
+)
 
 # Create your views here.
-def dashboard(request):
-    business = Business.objects.get(admin__user=request.user)
-    context = {"business": business}
-    return render(request, "core/dashboard.html", context)
+# def dashboard(request):
+#     business = Business.objects.get(admin__user=request.user)
+#     context = {"business": business}
+#     return render(request, "core/dashboard.html", context)
 
 
 def businesses(request):
@@ -77,5 +89,70 @@ def add_project(request, id):
 
 
 def project_detail(request, id):
-    context = {}
+    project = get_object_or_404(Project, id=id)
+    try:
+        budget = ProjectBudget.objects.get(project=project)
+    except ProjectBudget.DoesNotExist:
+        budget = None
+
+    if project:
+        contact_persons = ProjectContactPerson.objects.filter(project=project)
+    else:
+        contact_persons = None
+
+    try:
+        expenses = ProjectExpense.objects.filter(project=project).order_by(
+            "-created_at"
+        )
+    except ProjectExpense.DoesNotExist:
+        expenses = None
+
+    print(budget)
+    print(project)
+    budget_form = ProjectBudgetForm(instance=budget)
+    contact_person_form = ProjectContactPersonForm()
+    expense_form = ProjectExpenseForm()
+
+    context = {
+        "project": project,
+        "budget_form": budget_form,
+        "budget": budget,
+        "expenses": expenses,
+        "contact_persons": contact_persons,
+        "contact_person_form": contact_person_form,
+        "expense_form": expense_form,
+    }
     return render(request, "core/project_detail.html", context)
+
+
+def edit_budget(request, id):
+    project = get_object_or_404(Project, id=id)
+    budget, created = ProjectBudget.objects.get_or_create(project=project)
+    if request.method == "POST":
+        form = ProjectBudgetForm(request.POST, instance=project.budget)
+        if form.is_valid():
+            print("*" * 50)
+            form.save()
+            return redirect("project_detail", id=project.id)
+
+
+def add_contact_person(request, id):
+    project = get_object_or_404(Project, id=id)
+    if request.method == "POST":
+        form = ProjectContactPersonForm(request.POST)
+        if form.is_valid():
+            contact = form.save(commit=False)
+            contact.project = project
+            contact.save()
+            return redirect("project_detail", id=project.id)
+
+
+def add_expense(request, id):
+    project = get_object_or_404(Project, id=id)
+    if request.method == "POST":
+        form = ProjectExpenseForm(request.POST)
+        if form.is_valid():
+            expense = form.save(commit=False)
+            expense.project = project
+            expense.save()
+            return redirect("project_detail", id=project.id)

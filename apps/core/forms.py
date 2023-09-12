@@ -1,6 +1,12 @@
 from django import forms
 
-from .models import Business, Project
+from .models import (
+    Business,
+    Project,
+    ProjectBudget,
+    ProjectContactPerson,
+    ProjectExpense,
+)
 
 
 class BusinessCreationForm(forms.ModelForm):
@@ -18,3 +24,21 @@ class ProjectCreationForm(forms.ModelForm):
             "start_date": forms.DateInput(attrs={"type": "date"}),
             "end_date": forms.DateInput(attrs={"type": "date"}),
         }
+
+
+class ProjectBudgetForm(forms.ModelForm):
+    class Meta:
+        model = ProjectBudget
+        fields = ("amount",)
+
+
+class ProjectContactPersonForm(forms.ModelForm):
+    class Meta:
+        model = ProjectContactPerson
+        exclude = ("project",)
+
+
+class ProjectExpenseForm(forms.ModelForm):
+    class Meta:
+        model = ProjectExpense
+        exclude = ("project",)

@@ -90,6 +90,10 @@ class ProjectExpense(models.Model):
     supplier = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def total(self):
+        return self.quantity * self.unit_price
+
 
 class ProjectCustomer(models.Model):
     project = models.OneToOneField(

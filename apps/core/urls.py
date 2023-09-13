@@ -1,4 +1,5 @@
 from django.urls import path
+from .report_views import gen_project_expense_report
 
 from .views import (
     add_contact_person,
@@ -42,4 +43,5 @@ urlpatterns = [
         name="project_customer_add",
     ),
     path("project_sale/<int:id>/", project_sale, name="project_sale"),
+    path("report/<int:id>/", gen_project_expense_report, name="report"),
 ]

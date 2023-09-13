@@ -41,6 +41,12 @@
 							<h3 class="">{{ project }}</h3>
 
 							<!-- project title-->
+							<h4>
+								Reserve Price:
+								<span class="fw-semibold"
+									>Ugx {{ total_expenses_project|floatformat:"2g" }}</span
+								>
+							</h4>
 						</div>
 						{% if project.status == 'backlog' %}
 						<div class="badge bg-secondary text-light mb-3">

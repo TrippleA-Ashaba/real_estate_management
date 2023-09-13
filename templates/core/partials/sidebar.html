@@ -66,13 +66,14 @@
 						<li>
 							<a href="{% url 'businesses' %}">Businesses</a>
 						</li>
-						{% endif %}
+						{% else %}
 						<li>
 							<a href="{% url 'projects' %}">Projects</a>
 						</li>
 						<li>
 							<a href="{% url 'expenses' %}">Expenses</a>
 						</li>
+						{% endif %}
 					</ul>
 				</div>
 			</li>

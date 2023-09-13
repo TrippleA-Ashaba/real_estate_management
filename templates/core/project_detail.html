@@ -39,6 +39,15 @@
 					<div class="card-body">
 						<div class="d-flex justify-content-between align-items-center mb-2">
 							<h3 class="">{{ project }}</h3>
+							{% if project.status == 'sold' %}
+							<div>
+								<a
+									href="javascript:void(0)"
+									class="btn btn-lg btn-success text-light"
+									>SOLD</a
+								>
+							</div>
+							{% else %}
 							<div>
 								<a
 									href="{% url 'project_sale_detail' project.id %}"
@@ -46,6 +55,7 @@
 									>Sell</a
 								>
 							</div>
+							{% endif %}
 
 							<!-- project title-->
 						</div>
@@ -84,16 +94,26 @@
 						<p class="text-muted mb-2">{{ project.description }}</p>
 
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-md-2">
 								<div class="mb-4">
 									<h5>Start Date</h5>
 									<p>{{ project.start_date|date:'M d, Y'}}</p>
 								</div>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-2">
 								<div class="mb-4">
 									<h5>End Date</h5>
 									<p>{{ project.end_date|date:'M d, Y' }}</p>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="mb-4">
+									<h5>Reserve Price</h5>
+									{% if total_expenses %}
+									<p>Ugx {{ total_expenses|floatformat:"2g" }}</p>
+									{% else %}
+									<p>Ugx 0.00</p>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-md-4 d-flex align-items-center gap-4">
@@ -328,7 +348,10 @@
 										<td>{{ expense.description|truncatechars:10 }}</td>
 										<td>{{ expense.quantity }}</td>
 										<td>{{ expense.unit_price }}</td>
-										<td>{{ expense.quantity|multiply:expense.unit_price}}</td>
+										<td>
+											<!--  -->
+											{{expense.quantity|multiply:expense.unit_price|floatformat:"2g"}}
+										</td>
 										<td>{{ expense.supplier|truncatechars:10 }}</td>
 										<td class="d-flex">
 											<a

@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.contrib.auth.decorators import login_required, user_passes_test
 from apps.accounts.forms import SignUpForm
-
+from django.db.models import F, Sum
 from .forms import (
     BusinessCreationForm,
     ProjectBudgetForm,
@@ -21,6 +21,15 @@ from .models import (
     ProjectCustomer,
 )
 
+
+def is_system_admin(user):
+    return user.is_superuser
+
+
+def not_system_admin(user):
+    return not user.is_superuser
+
+
 # Create your views here.
 # def dashboard(request):
 #     business = Business.objects.get(admin__user=request.user)
@@ -28,6 +37,8 @@ from .models import (
 #     return render(request, "core/dashboard.html", context)
 
 
+@login_required
+@user_passes_test(is_system_admin)
 def businesses(request):
     businesses = Business.objects.all().order_by("-created_at")
     form = BusinessCreationForm()
@@ -41,6 +52,8 @@ def businesses(request):
     return render(request, "core/businesses.html", context)
 
 
+@login_required
+@user_passes_test(is_system_admin)
 def business_detail(request, id):
     business = get_object_or_404(Business, id=id)
     admin = None
@@ -62,6 +75,8 @@ def business_detail(request, id):
     return render(request, "core/business_detail.html", context)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def projects(request):
     user = request.user
     try:
@@ -73,6 +88,12 @@ def projects(request):
         projects = Project.objects.filter(business=business)
         project_count = projects.count()
 
+    total_expenses_business = (
+        ProjectExpense.objects.filter(project__business=business)
+        .annotate(total_expense=F("quantity") * F("unit_price"))
+        .aggregate(total=Sum("total_expense"))["total"]
+    )
+
     print(business)
     form = ProjectCreationForm()
     context = {
@@ -80,10 +101,13 @@ def projects(request):
         "projects": projects,
         "business": business,
         "project_count": project_count,
+        "total_expenses_business": total_expenses_business,
     }
     return render(request, "core/projects.html", context)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def project_edit(request, id):
     project = get_object_or_404(Project, id=id)
     form = ProjectCreationForm(instance=project)
@@ -96,6 +120,8 @@ def project_edit(request, id):
     return render(request, "core/project_edit.html", context)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def project_delete(request, id):
     if request.method == "POST":
         project = Project.objects.get(id=id)
@@ -103,6 +129,8 @@ def project_delete(request, id):
         return redirect("projects")
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def add_project(request, id):
     business = get_object_or_404(Business, id=id)
     if request.method == "POST":
@@ -116,6 +144,8 @@ def add_project(request, id):
     return redirect("projects")
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def project_detail(request, id):
     project = get_object_or_404(Project, id=id)
     try:
@@ -135,6 +165,11 @@ def project_detail(request, id):
     except ProjectExpense.DoesNotExist:
         expenses = None
 
+    total_expenses_project = (
+        ProjectExpense.objects.filter(project=project)
+        .annotate(total_expense=F("quantity") * F("unit_price"))
+        .aggregate(total=Sum("total_expense"))["total"]
+    )
     print(budget)
     print(project)
     budget_form = ProjectBudgetForm(instance=budget)
@@ -149,10 +184,13 @@ def project_detail(request, id):
         "contact_persons": contact_persons,
         "contact_person_form": contact_person_form,
         "expense_form": expense_form,
+        "total_expenses": total_expenses_project,
     }
     return render(request, "core/project_detail.html", context)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def edit_budget(request, id):
     project = get_object_or_404(Project, id=id)
     budget, created = ProjectBudget.objects.get_or_create(project=project)
@@ -164,6 +202,8 @@ def edit_budget(request, id):
             return redirect("project_detail", id=project.id)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def add_contact_person(request, id):
     project = get_object_or_404(Project, id=id)
     if request.method == "POST":
@@ -175,6 +215,8 @@ def add_contact_person(request, id):
             return redirect("project_detail", id=project.id)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def add_expense(request, id):
     project = get_object_or_404(Project, id=id)
     if request.method == "POST":
@@ -186,6 +228,8 @@ def add_expense(request, id):
             return redirect("project_detail", id=project.id)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def expense_edit(request, id):
     expense = get_object_or_404(ProjectExpense, id=id)
     project = get_object_or_404(Project, id=expense.project.id)
@@ -199,6 +243,8 @@ def expense_edit(request, id):
     return render(request, "core/expense_edit.html", context)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def expense_delete(request, id):
     if request.method == "POST":
         expense = ProjectExpense.objects.get(id=id)
@@ -207,6 +253,8 @@ def expense_delete(request, id):
         return redirect("project_detail", id=project.id)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def expenses(request):
     business = get_object_or_404(Business, admin__user=request.user)
     expenses = ProjectExpense.objects.filter(project__business=business)
@@ -215,6 +263,8 @@ def expenses(request):
     return render(request, "core/expenses.html", context)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def project_sale_detail(request, id):
     project = get_object_or_404(Project, id=id)
 
@@ -227,6 +277,12 @@ def project_sale_detail(request, id):
     except Project.sales.RelatedObjectDoesNotExist:
         sales = None
 
+    total_expenses_project = (
+        ProjectExpense.objects.filter(project=project)
+        .annotate(total_expense=F("quantity") * F("unit_price"))
+        .aggregate(total=Sum("total_expense"))["total"]
+    )
+
     customer_form = ProjectCustomerForm(instance=customer)
     sales_form = ProjectSalesForm()
 
@@ -236,10 +292,13 @@ def project_sale_detail(request, id):
         "sales_form": sales_form,
         "customer": customer,
         "sales": sales,
+        "total_expenses_project": total_expenses_project,
     }
     return render(request, "core/project_sale.html", context)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def project_customer_add(request, id):
     if request.method == "POST":
         project = get_object_or_404(Project, id=id)
@@ -255,6 +314,8 @@ def project_customer_add(request, id):
             return redirect("project_sale_detail", id=id)
 
 
+@login_required
+@user_passes_test(not_system_admin)
 def project_sale(request, id):
     if request.method == "POST":
         form = ProjectSalesForm(request.POST)
@@ -264,4 +325,6 @@ def project_sale(request, id):
             sale.project = project
             sale.customer = project.customer
             sale.save()
+            project.status = "sold"
+            project.save()
             return redirect("project_sale_detail", id=id)

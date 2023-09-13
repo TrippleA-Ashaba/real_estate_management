@@ -55,4 +55,4 @@ class ProjectCustomerForm(forms.ModelForm):
 class ProjectSalesForm(forms.ModelForm):
     class Meta:
         model = ProjectSales
-        exclude = ("project", "customer")
+        exclude = ("project", "customer", "settled")

@@ -12,19 +12,6 @@ class SignUpView(LoginRequiredMixin, CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy("/")
 
-    def form_valid(self, form):
-        # Call the parent class's form_valid method to save the user
-        response = super().form_valid(form)
-
-        # Authenticate and log in the user
-        email = form.cleaned_data["email"]
-        password = form.cleaned_data["password1"]
-        user = authenticate(self.request, email=email, password=password)
-        if user is not None:
-            login(self.request, user)
-
-        return response
-
 
 def user_login(request):
     if request.method == "POST":
@@ -32,6 +19,8 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            if user.is_superuser:
+                return redirect("/businesses/")
             return redirect("/")  # Replace 'home' with the URL name of your home page
     else:
         form = LoginForm()

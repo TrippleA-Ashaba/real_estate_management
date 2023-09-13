@@ -1,0 +1,515 @@
+{% extends 'base.html' %}
+<!--  -->
+{% load static %}
+<!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
+{% load math_filters %}
+<!--  -->
+{% block content %}
+
+<div class="content">
+	<!-- Start Content-->
+	<div class="container-fluid">
+		<!-- start page title -->
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<div class="page-title-right">
+						<ol class="breadcrumb m-0">
+							<li class="breadcrumb-item">
+								<a href="javascript: void(0);">Hyper</a>
+							</li>
+							<li class="breadcrumb-item">
+								<a href="javascript: void(0);">Projects</a>
+							</li>
+							<li class="breadcrumb-item active">Project Details</li>
+						</ol>
+					</div>
+					<h4 class="page-title">Project Details</h4>
+				</div>
+			</div>
+		</div>
+		<!-- end page title -->
+
+		<div class="row">
+			<div class="col-12">
+				<!-- project card -->
+				<div class="card d-block">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-center mb-2">
+							<h3 class="">{{ project }}</h3>
+							{% if project.status == 'sold' %}
+							<div>
+								<a
+									href="javascript:void(0)"
+									class="btn btn-lg btn-success text-light"
+									>SOLD</a
+								>
+							</div>
+							{% else %}
+							<div>
+								<a
+									href="{% url 'project_sale_detail' project.id %}"
+									class="btn btn-lg btn-warning text-light"
+									>Sell</a
+								>
+							</div>
+							{% endif %}
+
+							<!-- project title-->
+						</div>
+						{% if project.status == 'backlog' %}
+						<div class="badge bg-secondary text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'planned' %}
+						<div class="badge bg-warning text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'sold' %}
+						<div class="badge bg-success text-white mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'paused' %}
+						<div class="badge bg-secondary-lighten text-dark mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'completed' %}
+						<div class="badge bg-success text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'canceled' %}
+						<div class="badge bg-danger text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% else %}
+						<div class="badge bg-primary text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% endif %}
+
+						<h5>Project Overview:</h5>
+
+						<p class="text-muted mb-2">{{ project.description }}</p>
+
+						<div class="row">
+							<div class="col-md-2">
+								<div class="mb-4">
+									<h5>Start Date</h5>
+									<p>{{ project.start_date|date:'M d, Y'}}</p>
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="mb-4">
+									<h5>End Date</h5>
+									<p>{{ project.end_date|date:'M d, Y' }}</p>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="mb-4">
+									<h5>Reserve Price</h5>
+									{% if total_expenses %}
+									<p>Ugx {{ total_expenses|floatformat:"2g" }}</p>
+									{% else %}
+									<p>Ugx 0.00</p>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-md-4 d-flex align-items-center gap-4">
+								<div class="mb-4">
+									<h5>Budget</h5>
+									{% if budget %}
+									<p>Ugx {{ budget|floatformat:"2g" }}</p>
+									{% else %}
+									<p>Ugx 0.00</p>
+									{% endif %}
+								</div>
+								<div class="mb-4">
+									<button
+										class="btn btn-soft-danger btn-sm"
+										data-bs-toggle="modal"
+										data-bs-target="#budget-modal">
+										Edit Budget
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="mb-4">
+							<div class="mb-3 d-flex align-items-center gap-5">
+								<h4 class="header-title mb-2">Contact Person:</h4>
+								<button
+									class="btn btn-soft-danger btn-sm"
+									data-bs-toggle="modal"
+									data-bs-target="#contact-modal">
+									Add Contact Person
+								</button>
+							</div>
+							<div class="d-flex flex-wrap gap-2 align-items-center">
+								{% if contact_persons %}
+								<!--  -->
+								{% for person in contact_persons %}
+								<div style="width: 300px">
+									<h5 class="fs-4">{{ person }}</h5>
+
+									<ul class="list-unstyled mb-0">
+										<li>
+											<p class="mb-2">
+												<span class="fw-semibold me-2">Job Title:</span>
+												<!--  -->
+												{{ person.designation }}
+											</p>
+											<p class="mb-2">
+												<span class="fw-semibold me-2">Email:</span>
+												<!--  -->
+												{{ person.email }}
+											</p>
+											<p class="mb-2">
+												<span class="fw-semibold me-2">Phone Number:</span>
+												<!--  -->
+												{{ person.phone_number }}
+											</p>
+											<p class="mb-0">
+												<span class="fw-semibold me-2">Address:</span>
+												<!--  -->
+												{{ person.address }}
+											</p>
+										</li>
+									</ul>
+								</div>
+								{% endfor %}
+								<!--  -->
+								{% endif %}
+							</div>
+						</div>
+						<!-- <div id="tooltip-container">
+							<h5>Staff Members:</h5>
+							<a
+								href="javascript:void(0);"
+								data-bs-container="#tooltip-container"
+								data-bs-toggle="tooltip"
+								data-bs-placement="top"
+								title="Mat Helme"
+								class="d-inline-block">
+								<img
+									src="{% static 'assets/images/users/avatar-6.jpg' %}"
+									class="rounded-circle img-thumbnail avatar-sm"
+									alt="friend" />
+							</a>
+
+							<a
+								href="javascript:void(0);"
+								data-bs-container="#tooltip-container"
+								data-bs-toggle="tooltip"
+								data-bs-placement="top"
+								title="Michael Zenaty"
+								class="d-inline-block">
+								<img
+									src="{% static 'assets/images/users/avatar-7.jpg' %}"
+									class="rounded-circle img-thumbnail avatar-sm"
+									alt="friend" />
+							</a>
+
+							<a
+								href="javascript:void(0);"
+								data-bs-container="#tooltip-container"
+								data-bs-toggle="tooltip"
+								data-bs-placement="top"
+								title="James Anderson"
+								class="d-inline-block">
+								<img
+									src="{% static 'assets/images/users/avatar-8.jpg' %}"
+									class="rounded-circle img-thumbnail avatar-sm"
+									alt="friend" />
+							</a>
+
+							<a
+								href="javascript:void(0);"
+								data-bs-container="#tooltip-container"
+								data-bs-toggle="tooltip"
+								data-bs-placement="top"
+								title="Mat Helme"
+								class="d-inline-block">
+								<img
+									src="{% static 'assets/images/users/avatar-4.jpg' %}"
+									class="rounded-circle img-thumbnail avatar-sm"
+									alt="friend" />
+							</a>
+
+							<a
+								href="javascript:void(0);"
+								data-bs-container="#tooltip-container"
+								data-bs-toggle="tooltip"
+								data-bs-placement="top"
+								title="Michael Zenaty"
+								class="d-inline-block">
+								<img
+									src="{% static 'assets/images/users/avatar-5.jpg' %}"
+									class="rounded-circle img-thumbnail avatar-sm"
+									alt="friend" />
+							</a>
+
+							<a
+								href="javascript:void(0);"
+								data-bs-container="#tooltip-container"
+								data-bs-toggle="tooltip"
+								data-bs-placement="top"
+								title="James Anderson"
+								class="d-inline-block">
+								<img
+									src="{% static 'assets/images/users/avatar-3.jpg' %}"
+									class="rounded-circle img-thumbnail avatar-sm"
+									alt="friend" />
+							</a>
+						</div> -->
+					</div>
+					<!-- end card-body-->
+				</div>
+				<!-- end card-->
+			</div>
+			<!-- end col -->
+		</div>
+		<!-- end row -->
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="mt-0 mb-3">Expenses</h4>
+
+						<div class="row mb-2">
+							<div class="col-xl-8">
+								<form
+									class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
+									<div class="col-auto">
+										<label for="inputPassword2" class="visually-hidden"
+											>Search</label
+										>
+										<input
+											type="search"
+											class="form-control"
+											id="inputPassword2"
+											placeholder="Search..." />
+									</div>
+									<div class="col-auto">
+										<div class="d-flex align-items-center">
+											<label for="status-select" class="me-2">Status</label>
+											<select class="form-select" id="status-select">
+												<option selected>Choose...</option>
+												<option value="1">Paid</option>
+												<option value="2">Awaiting Authorization</option>
+												<option value="3">Payment Failed</option>
+												<option value="4">Cash On Delivery</option>
+												<option value="5">Fulfilled</option>
+												<option value="6">Unfulfilled</option>
+											</select>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="col-xl-4">
+								<div class="text-xl-end mt-xl-0 mt-2">
+									<button
+										type="button"
+										class="btn btn-danger mb-2 me-2"
+										data-bs-toggle="modal"
+										data-bs-target="#expense-modal">
+										<i class="mdi mdi-basket me-1"></i> Add New Expense
+									</button>
+									<button type="button" class="btn btn-light mb-2">Export</button>
+								</div>
+							</div>
+							<!-- end col-->
+						</div>
+
+						<div class="table-responsive">
+							<table class="table table-centered table-nowrap mb-0">
+								<thead class="table-light">
+									<tr>
+										<th>Order Date</th>
+										<th>Item</th>
+										<th>Description</th>
+										<th>Quantity</th>
+										<th>Unit Price</th>
+										<th>Total</th>
+										<th>Supplier</th>
+										<th style="width: 125px">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for expense in expenses %}
+									<tr>
+										<td>{{ expense.created_at }}</td>
+
+										<td>
+											<span class="fw-bold">
+												{{ expense.item|truncatechars:15 }}</span
+											>
+										</td>
+										<td>{{ expense.description|truncatechars:10 }}</td>
+										<td>{{ expense.quantity }}</td>
+										<td>{{ expense.unit_price }}</td>
+										<td>
+											<!--  -->
+											{{expense.quantity|multiply:expense.unit_price|floatformat:"2g"}}
+										</td>
+										<td>{{ expense.supplier|truncatechars:10 }}</td>
+										<td class="d-flex">
+											<a
+												href="{% url 'expense_edit' expense.id %}"
+												class="action-icon">
+												<i class="mdi mdi-square-edit-outline"></i
+											></a>
+											<form
+												action="{% url 'expense_delete' expense.id %}"
+												method="post">
+												{% csrf_token %}
+												<button
+													class="btn btn-sm btn-outline-light"
+													data-bs-toggle="tooltip"
+													data-bs-placement="top"
+													title="Delete">
+													<i class="uil uil-trash text-danger"></i>
+												</button>
+											</form>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- end card-body-->
+				</div>
+				<!-- end card-->
+			</div>
+			<!-- end col -->
+		</div>
+		<!-- end row -->
+	</div>
+	<!-- container -->
+</div>
+<!-- content -->
+
+<!-- Signup modal content -->
+<div id="budget-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form class="ps-3 pe-3" action="{% url 'edit_budget' project.id %}" method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ budget_form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+
+<div id="contact-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form
+					class="ps-3 pe-3"
+					action="{% url 'add_contact_person' project.id %}"
+					method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ contact_person_form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!--  -->
+
+<div id="expense-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form class="ps-3 pe-3" action="{% url 'add_expense' project.id %}" method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ expense_form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+
+{% endblock %}

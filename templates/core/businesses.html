@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+<!--  -->
+{% load static %}
+<!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
+{% block content %}
+<div class="my-2">
+	<div class="card">
+		<div class="d-flex justify-content-between align-items-center m-1 p-2">
+			<h4 class="header-title">Businesses</h4>
+			<div class="button-list">
+				<button
+					type="button"
+					class="btn btn-primary"
+					data-bs-toggle="modal"
+					data-bs-target="#signup-modal">
+					Add Business
+				</button>
+			</div>
+		</div>
+		<div class="card-body">
+			<table class="table table-striped table-centered mb-0">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Date Created</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for business in businesses %}
+					<tr>
+						<td class="table-user">
+							<a href="{% url 'business_detail' business.id %}">{{ business }}</a>
+						</td>
+						<td>{{ business.description|truncatewords:5 }}</td>
+						<td>{{ business.created_at }}</td>
+						<td class="table-action">
+							<a href="javascript: void(0);" class="action-icon">
+								<i class="mdi mdi-pencil"></i
+							></a>
+							<a href="javascript: void(0);" class="action-icon">
+								<i class="mdi mdi-delete"></i
+							></a>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!--  -->
+<!-- Signup modal content -->
+<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form class="ps-3 pe-3" action="{% url 'businesses' %}" method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Add Business</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}

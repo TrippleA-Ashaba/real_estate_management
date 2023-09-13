@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+<!--  -->
+{% load static %}
+<!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
+{% load math_filters %}
+<!--  -->
+{% block content %}
+
+<div class="content">
+	<!-- Start Content-->
+	<div class="container-fluid">
+		<!-- start page title -->
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<div class="page-title-right">
+						<ol class="breadcrumb m-0">
+							<li class="breadcrumb-item">
+								<a href="javascript: void(0);">Hyper</a>
+							</li>
+							<li class="breadcrumb-item">
+								<a href="javascript: void(0);">Projects</a>
+							</li>
+							<li class="breadcrumb-item active">Sale</li>
+						</ol>
+					</div>
+					<h4 class="page-title">Project Sale</h4>
+				</div>
+			</div>
+		</div>
+		<!-- end page title -->
+
+		<div class="row">
+			<div class="col-12">
+				<!-- project card -->
+				<div class="card d-block">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-center mb-2">
+							<h3 class="">{{ project }}</h3>
+
+							<!-- project title-->
+							<h4>
+								Reserve Price:
+								<span class="fw-semibold"
+									>Ugx {{ total_expenses_project|floatformat:"2g" }}</span
+								>
+							</h4>
+						</div>
+						{% if project.status == 'backlog' %}
+						<div class="badge bg-secondary text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'planned' %}
+						<div class="badge bg-warning text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'sold' %}
+						<div class="badge bg-success text-white mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'paused' %}
+						<div class="badge bg-secondary-lighten text-dark mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'completed' %}
+						<div class="badge bg-success text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% elif project.status == 'canceled' %}
+						<div class="badge bg-danger text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% else %}
+						<div class="badge bg-primary text-light mb-3">
+							{{ project.get_status_display|capfirst }}
+						</div>
+						{% endif %}
+
+						<div class="mb-4">
+							<div class="mb-3 d-flex align-items-center gap-5">
+								<h4 class="header-title mb-2">Customer:</h4>
+								<button
+									class="btn btn-soft-danger btn-sm"
+									data-bs-toggle="modal"
+									data-bs-target="#customer-modal">
+									Add/Edit Customer
+								</button>
+							</div>
+							<div class="d-flex flex-wrap gap-2 align-items-center">
+								<!--  -->
+								<div style="width: 300px">
+									{% if customer %}
+									<h5 class="fs-4">{{ customer }}</h5>
+									<ul class="list-unstyled mb-0">
+										<li>
+											<p class="mb-2">
+												<span class="fw-semibold me-2">Email:</span>
+												<!--  -->
+												{{ customer.email }}
+											</p>
+											<p class="mb-2">
+												<span class="fw-semibold me-2">Phone Number:</span>
+												<!--  -->
+												{{ customer.phone_number }}
+											</p>
+											<p class="mb-0">
+												<span class="fw-semibold me-2">Address:</span>
+												<!--  -->
+												{{ customer.address }}
+											</p>
+										</li>
+									</ul>
+									{% endif %}
+								</div>
+								<!--  -->
+							</div>
+						</div>
+					</div>
+					<!-- end card-body-->
+				</div>
+				<!-- end card-->
+			</div>
+			<!-- end col -->
+		</div>
+		<!-- end row -->
+		{% if not sales %}
+		<div class="row">
+			<div class="col">
+				<div class="card d-block">
+					<div class="card-body">
+						<h3 class="mb-4">Sale Details</h3>
+						<div class="mb-4">
+							<form action="{% url 'project_sale' project.id %}" method="post">
+								{% csrf_token %}
+								<!--  -->
+								{{ sales_form|crispy }}
+
+								<div class="my-4">
+									<button
+										class="btn btn-primary {% if not customer %}disabled{% endif %}">
+										Sell
+									</button>
+									{% if not customer %}
+									<small>Add customer first</small>
+									{% endif %}
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+	<!-- container -->
+</div>
+<!-- content -->
+
+<div id="customer-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-brand text-center mt-2 mb-4 position-relative top-0">
+					<a href="index.html" class="logo-dark">
+						<span
+							><img
+								src="{% static 'assets/images/logo-dark.png' %}"
+								alt="dark logo"
+								height="22"
+						/></span>
+					</a>
+					<a href="index.html" class="logo-light">
+						<span
+							><img
+								src="{% static 'assets/images/logo.png' %}"
+								alt="logo"
+								height="22"
+						/></span>
+					</a>
+				</div>
+
+				<form
+					class="ps-3 pe-3"
+					action="{% url 'project_customer_add' project.id %}"
+					method="post">
+					{% csrf_token %}
+					<!--  -->
+					{{ customer_form|crispy }}
+
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+
+{% endblock %}

@@ -5,8 +5,8 @@ from .models import (
     Project,
     ProjectBudget,
     ProjectContactPerson,
-    ProjectExpense,
     ProjectCustomer,
+    ProjectExpense,
     ProjectSales,
 )
 

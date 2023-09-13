@@ -2,21 +2,21 @@ from django.urls import path
 
 from .views import (
     add_contact_person,
+    add_expense,
     add_project,
     business_detail,
     businesses,
     edit_budget,
-    project_detail,
-    projects,
-    add_expense,
-    project_edit,
-    project_delete,
-    expense_edit,
     expense_delete,
+    expense_edit,
     expenses,
-    project_sale,
     project_customer_add,
+    project_delete,
+    project_detail,
+    project_edit,
+    project_sale,
     project_sale_detail,
+    projects,
 )
 
 urlpatterns = [

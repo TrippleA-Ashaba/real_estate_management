@@ -1,14 +1,16 @@
-from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, user_passes_test
-from apps.accounts.forms import SignUpForm
 from django.db.models import F, Sum
+from django.shortcuts import get_object_or_404, redirect, render
+
+from apps.accounts.forms import SignUpForm
+
 from .forms import (
     BusinessCreationForm,
     ProjectBudgetForm,
     ProjectContactPersonForm,
     ProjectCreationForm,
-    ProjectExpenseForm,
     ProjectCustomerForm,
+    ProjectExpenseForm,
     ProjectSalesForm,
 )
 from .models import (
@@ -17,8 +19,8 @@ from .models import (
     Project,
     ProjectBudget,
     ProjectContactPerson,
-    ProjectExpense,
     ProjectCustomer,
+    ProjectExpense,
 )
 
 

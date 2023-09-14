@@ -145,20 +145,29 @@
 								<input
 									type="search"
 									class="form-control"
-									id="inputPassword2"
-									placeholder="Search..." />
+									id="projects_search"
+									name="projects_search"
+									placeholder="Search..."
+									hx-get="{% url 'search_project' %}"
+									hx-trigger="keyup changed delay:500ms, search"
+									hx-target="#projects_table" />
 							</div>
 							<div class="col-auto">
 								<div class="d-flex align-items-center">
 									<label for="status-select" class="me-2">Status</label>
-									<select class="form-select" id="status-select">
+									<select
+										class="form-select"
+										id="status-select"
+										name="status"
+										hx-get="{% url 'select_property_status' %}"
+										hx-trigger="change"
+										hx-target="#projects_table">
 										<option selected>Choose...</option>
-										<option value="1">Paid</option>
-										<option value="2">Awaiting Authorization</option>
-										<option value="3">Payment Failed</option>
-										<option value="4">Cash On Delivery</option>
-										<option value="5">Fulfilled</option>
-										<option value="6">Unfulfilled</option>
+										{% for status in ProjectStatus.choices %}
+										<option value="{{ status.0 }}">
+											{{ status.1|capfirst }}
+										</option>
+										{% endfor %}
 									</select>
 								</div>
 							</div>
@@ -189,7 +198,7 @@
 								<th scope="col">Action</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="projects_table">
 							{% for project in projects %}
 							<tr>
 								<td>

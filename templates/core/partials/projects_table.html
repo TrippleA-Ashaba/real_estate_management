@@ -1,0 +1,49 @@
+{% for project in projects %}
+<tr>
+	<td>
+		<a href="{% url 'project_detail' project.id %}"> {{ project }} </a>
+	</td>
+	<td>{{ project.location|truncatechars:20 }}</td>
+	<td>{{ project.start_date|date:'M d, Y' }}</td>
+	<td>{{ project.end_date|date:'M d, Y' }}</td>
+
+	<td>
+		{% if project.status == 'backlog' %}
+		<span class="badge bg-secondary-lighten text-secondary">{{ project.status }}</span>
+		{% elif project.status == 'planned' %}
+		<span class="badge bg-warning-lighten text-warning">{{ project.status }}</span>
+		{% elif project.status == 'sold' %}
+		<span class="badge bg-success text-white">{{ project.status }}</span>
+		{% elif project.status == 'paused' %}
+		<span class="badge bg-secondary text-white">{{ project.status }}</span>
+		{% elif project.status == 'completed' %}
+		<span class="badge bg-success-lighten text-success">{{ project.status }}</span>
+		{% elif project.status == 'canceled' %}
+		<span class="badge bg-danger-lighten text-danger">{{ project.status }}</span>
+		{% else %}
+		<span class="badge bg-primary-lighten text-primary">{{ project.status }}</span>
+		{% endif %}
+	</td>
+	<td class="d-flex">
+		<a
+			href="{% url 'project_edit' project.id %}"
+			class="font-18 text-info me-2"
+			data-bs-toggle="tooltip"
+			data-bs-placement="top"
+			title="Edit"
+			><i class="uil uil-pen"></i
+		></a>
+		<form action="{% url 'project_delete' project.id %}" method="post">
+			{% csrf_token %}
+			<button
+				class="btn btn-sm btn-outline-light"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Delete">
+				<i class="uil uil-trash text-danger"></i>
+			</button>
+		</form>
+	</td>
+</tr>
+<!-- end tr -->
+{% endfor %}

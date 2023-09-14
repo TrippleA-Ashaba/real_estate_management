@@ -18,6 +18,8 @@ from .views import (
     project_sale,
     project_sale_detail,
     projects,
+    search_project,
+    select_property_status,
 )
 
 urlpatterns = [
@@ -44,4 +46,8 @@ urlpatterns = [
     ),
     path("project_sale/<int:id>/", project_sale, name="project_sale"),
     path("report/<int:id>/", gen_project_expense_report, name="report"),
+    path("search_project/", search_project, name="search_project"),
+    path(
+        "select_property_status/", select_property_status, name="select_property_status"
+    ),
 ]

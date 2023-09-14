@@ -22,6 +22,7 @@ from .models import (
     ProjectCustomer,
     ProjectExpense,
     ProjectStatus,
+    ProjectSales,
 )
 
 
@@ -97,7 +98,14 @@ def projects(request):
         .aggregate(total=Sum("total_expense"))["total"]
     )
 
-    print(business)
+    total_sales_business = ProjectSales.objects.filter(
+        project__business=business
+    ).aggregate(total_sales=Sum("amount"))["total_sales"]
+
+    completed_projects_business = Project.objects.filter(
+        business=business, status=ProjectStatus.COMPLETED
+    ).count()
+
     form = ProjectCreationForm()
     context = {
         "form": form,
@@ -106,6 +114,8 @@ def projects(request):
         "project_count": project_count,
         "total_expenses_business": total_expenses_business,
         "ProjectStatus": ProjectStatus,
+        "total_sales_business": total_sales_business,
+        "completed_projects_business": completed_projects_business,
     }
     return render(request, "core/projects.html", context)
 
@@ -140,7 +150,6 @@ def add_project(request, id):
     if request.method == "POST":
         form = ProjectCreationForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
             project = form.save(commit=False)
             project.business = business
             project.save()
@@ -174,8 +183,7 @@ def project_detail(request, id):
         .annotate(total_expense=F("quantity") * F("unit_price"))
         .aggregate(total=Sum("total_expense"))["total"]
     )
-    print(budget)
-    print(project)
+
     budget_form = ProjectBudgetForm(instance=budget)
     contact_person_form = ProjectContactPersonForm()
     expense_form = ProjectExpenseForm()
@@ -201,7 +209,6 @@ def edit_budget(request, id):
     if request.method == "POST":
         form = ProjectBudgetForm(request.POST, instance=project.budget)
         if form.is_valid():
-            print("*" * 50)
             form.save()
             return redirect("project_detail", id=project.id)
 
@@ -345,7 +352,6 @@ def search_project(request):
             | Q(location__icontains=search)
             | Q(status__icontains=search)
         )
-    print(search)
     context = {"search": search, "projects": projects}
     return render(request, "core/partials/projects_table.html", context)
 
@@ -353,7 +359,6 @@ def search_project(request):
 def select_property_status(request):
     projects = Project.objects.filter(business__admin__user=request.user)
     status = request.GET.get("status")
-    print(status)
     if status:
         projects = projects.filter(status=status)
     context = {"projects": projects}

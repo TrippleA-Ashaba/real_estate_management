@@ -91,9 +91,47 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-sm-6 col-xl-3">
+		<div class="card">
+			<div class="card-body">
+				<div class="d-flex align-items-center">
+					<div class="flex-shrink-0 me-3">
+						<div class="avatar-sm">
+							<span class="avatar-title bg-primary-lighten text-primary rounded">
+								<i class="mdi mdi-file-document-edit font-24"></i>
+							</span>
+						</div>
+					</div>
+					<div class="flex-grow-1">
+						<h5 class="mt-0 mb-1">Total Sales</h5>
+						<p class="mb-0">{{ total_expenses_business|floatformat:'2g' }}</p>
+					</div>
+					<div class="dropdown float-end">
+						<a
+							href="#"
+							class="dropdown-toggle arrow-none card-drop"
+							data-bs-toggle="dropdown"
+							aria-expanded="false">
+							<i class="mdi mdi-dots-vertical"></i>
+						</a>
+						<div class="dropdown-menu dropdown-menu-end">
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">Today</a>
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">Yesterday</a>
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">Last Week</a>
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">Last Month</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <div class="row">
-	<div class="col-xxl-6">
+	<div class="col-12">
 		<div class="card">
 			<div class="card-header d-flex justify-content-between align-items-center"></div>
 

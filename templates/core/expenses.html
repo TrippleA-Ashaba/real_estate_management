@@ -55,7 +55,9 @@
 					<!-- end col-->
 				</div>
 				<div class="table-responsive mt-n2">
-					<table class="table table-centered table-hover table-nowrap mb-0">
+					<table
+						class="table dt-responsive table-centered table-hover table-nowrap mb-0"
+						id="basic-datatable">
 						<thead>
 							<tr>
 								<th scope="col">Project</th>
@@ -63,7 +65,7 @@
 								<th scope="col">Supplier</th>
 								<th scope="col">Order Date</th>
 								<th scope="col">Quantity</th>
-								<th scope="col">Cost</th>
+								<th scope="col">Cost Ugx</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -74,7 +76,10 @@
 								<td>{{ expense.supplier|truncatechars:20 }}</td>
 								<td>{{ expense.created_at|date:'M d, Y' }}</td>
 								<td>{{ expense.quantity }}</td>
-								<td>{{ expense.quantity|multiply:expense.unit_price }}</td>
+								<td>
+									<!--  -->
+									{{ expense.total|floatformat:'2g' }}
+								</td>
 							</tr>
 							<!-- end tr -->
 							{% endfor %}

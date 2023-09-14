@@ -228,9 +228,12 @@
 					<!-- end col-->
 				</div>
 				<div class="table-responsive mt-n2">
-					<table class="table table-centered table-hover table-nowrap mb-0">
+					<table
+						class="table dt-responsive table-centered table-hover table-nowrap mb-0"
+						id="basic-datatable">
 						<thead>
 							<tr>
+								<th scope="col">No.</th>
 								<th scope="col">Project Name</th>
 								<th scope="col">Location</th>
 								<th scope="col">Start Date</th>
@@ -242,6 +245,7 @@
 						<tbody id="projects_table">
 							{% for project in projects %}
 							<tr>
+								<td>{{ forloop.counter }}</td>
 								<td>
 									<a href="{% url 'project_detail' project.id %}">
 										{{ project }}

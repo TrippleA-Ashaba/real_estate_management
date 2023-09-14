@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.accounts.forms import SignUpForm
@@ -21,6 +21,7 @@ from .models import (
     ProjectContactPerson,
     ProjectCustomer,
     ProjectExpense,
+    ProjectStatus,
 )
 
 
@@ -104,6 +105,7 @@ def projects(request):
         "business": business,
         "project_count": project_count,
         "total_expenses_business": total_expenses_business,
+        "ProjectStatus": ProjectStatus,
     }
     return render(request, "core/projects.html", context)
 
@@ -330,3 +332,29 @@ def project_sale(request, id):
             project.status = "sold"
             project.save()
             return redirect("project_sale_detail", id=id)
+
+
+def search_project(request):
+    business = get_object_or_404(Business, admin__user=request.user)
+    search = request.GET.get("projects_search")
+    projects = Project.objects.filter(business=business)
+    if search:
+        projects = projects.filter(
+            Q(name__icontains=search)
+            | Q(description__icontains=search)
+            | Q(location__icontains=search)
+            | Q(status__icontains=search)
+        )
+    print(search)
+    context = {"search": search, "projects": projects}
+    return render(request, "core/partials/projects_table.html", context)
+
+
+def select_property_status(request):
+    projects = Project.objects.filter(business__admin__user=request.user)
+    status = request.GET.get("status")
+    print(status)
+    if status:
+        projects = projects.filter(status=status)
+    context = {"projects": projects}
+    return render(request, "core/partials/projects_table.html", context)

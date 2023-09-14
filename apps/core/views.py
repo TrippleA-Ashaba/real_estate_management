@@ -102,6 +102,10 @@ def projects(request):
         project__business=business
     ).aggregate(total_sales=Sum("amount"))["total_sales"]
 
+    completed_projects_business = Project.objects.filter(
+        business=business, status=ProjectStatus.COMPLETED
+    ).count()
+
     form = ProjectCreationForm()
     context = {
         "form": form,
@@ -111,6 +115,7 @@ def projects(request):
         "total_expenses_business": total_expenses_business,
         "ProjectStatus": ProjectStatus,
         "total_sales_business": total_sales_business,
+        "completed_projects_business": completed_projects_business,
     }
     return render(request, "core/projects.html", context)
 

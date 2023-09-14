@@ -3,7 +3,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<title>RealEstateMaster</title>
+		<title>EstateMaster</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<!-- App favicon -->
@@ -17,6 +17,16 @@
 
 		<!-- Theme Config Js -->
 		<script src="{% static 'assets/js/hyper-config.js' %}"></script>
+
+		<!-- Datatables css -->
+		<link
+			href="{% static 'assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}"
+			rel="stylesheet"
+			type="text/css" />
+		<link
+			href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}"
+			rel="stylesheet"
+			type="text/css" />
 
 		<!-- App css -->
 		<link
@@ -832,6 +842,16 @@
 
 		<!-- App js -->
 		<script src="{% static 'assets/js/app.min.js' %}"></script>
+		<!--  -->
+
+		<!-- Datatables -->
+		<script src="{% static 'assets/vendor/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+		<script src="{% static 'assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+		<script src="{% static 'assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+		<script src="{% static 'assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
+
+		<!-- Datatable Init js -->
+		<script src="{% static 'assets/js/pages/demo.datatable-init.js' %}"></script>
 	</body>
 
 	<!-- Mirrored from coderthemes.com/hyper_2/saas/dashboard-projects.html by HTTrack Website Copier/3.x [XR&CO'2017], Tue, 29 Nov 2022 08:38:05 GMT -->

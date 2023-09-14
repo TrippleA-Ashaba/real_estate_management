@@ -137,13 +137,24 @@
 								<!--  -->
 								{{ sales_form|crispy }}
 
-								<div class="my-4">
-									<button
-										class="btn btn-primary {% if not customer %}disabled{% endif %}">
-										Sell
-									</button>
+								<div class="my-4 d-flex align-items-center justify-content-between">
+									<div>
+										<button
+											class="btn btn-primary {% if not customer %}disabled{% endif %}">
+											Sell
+										</button>
+									</div>
 									{% if not customer %}
-									<small>Add customer first</small>
+									<div>
+										<small>Must Add customer first</small>
+										<button
+											type="button"
+											class="btn btn-soft-danger btn-sm"
+											data-bs-toggle="modal"
+											data-bs-target="#customer-modal">
+											Add/Edit Customer
+										</button>
+									</div>
 									{% endif %}
 								</div>
 							</form>

@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import F, Sum, Q
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.contrib import messages
 from apps.accounts.forms import SignUpForm
 
 from .forms import (
@@ -129,8 +129,14 @@ def project_edit(request, id):
         form = ProjectCreationForm(request.POST, instance=project)
         if form.is_valid():
             form.save()
+            messages.success(
+                request, "Project Edit Successful", extra_tags="alert-success"
+            )
             return redirect("projects")
-    context = {"form": form, "project": project}
+    context = {
+        "form": form,
+        "project": project,
+    }
     return render(request, "core/project_edit.html", context)
 
 
@@ -140,6 +146,9 @@ def project_delete(request, id):
     if request.method == "POST":
         project = Project.objects.get(id=id)
         project.delete()
+        messages.success(
+            request, "Project Deletion Successful", extra_tags="alert-success"
+        )
         return redirect("projects")
 
 
@@ -153,6 +162,9 @@ def add_project(request, id):
             project = form.save(commit=False)
             project.business = business
             project.save()
+            messages.success(
+                request, "Project Addition Successful", extra_tags="alert-success"
+            )
 
     return redirect("projects")
 
@@ -210,6 +222,9 @@ def edit_budget(request, id):
         form = ProjectBudgetForm(request.POST, instance=project.budget)
         if form.is_valid():
             form.save()
+            messages.success(
+                request, "Budget Edit Successful", extra_tags="alert-success"
+            )
             return redirect("project_detail", id=project.id)
 
 
@@ -223,6 +238,9 @@ def add_contact_person(request, id):
             contact = form.save(commit=False)
             contact.project = project
             contact.save()
+            messages.success(
+                request, "Contact Addition Successful", extra_tags="alert-success"
+            )
             return redirect("project_detail", id=project.id)
 
 
@@ -236,6 +254,9 @@ def add_expense(request, id):
             expense = form.save(commit=False)
             expense.project = project
             expense.save()
+            messages.success(
+                request, "Expense Addition Successful", extra_tags="alert-success"
+            )
             return redirect("project_detail", id=project.id)
 
 
@@ -249,6 +270,9 @@ def expense_edit(request, id):
         form = ProjectExpenseForm(request.POST, instance=expense)
         if form.is_valid():
             form.save()
+            messages.success(
+                request, "Expense Edit Successful", extra_tags="alert-success"
+            )
             return redirect("project_detail", id=expense.project.id)
     context = {"form": form, "expense": expense, "project": project}
     return render(request, "core/expense_edit.html", context)
@@ -261,6 +285,9 @@ def expense_delete(request, id):
         expense = ProjectExpense.objects.get(id=id)
         project = Project.objects.get(id=expense.project.id)
         expense.delete()
+        messages.success(
+            request, "Expense Deletion Successful", extra_tags="alert-success"
+        )
         return redirect("project_detail", id=project.id)
 
 
@@ -322,6 +349,7 @@ def project_customer_add(request, id):
                 for field, value in form.cleaned_data.items():
                     setattr(customer, field, value)
                 customer.save()
+            messages.success(request, "Customer Added", extra_tags="alert-success")
             return redirect("project_sale_detail", id=id)
 
 
@@ -338,6 +366,7 @@ def project_sale(request, id):
             sale.save()
             project.status = "sold"
             project.save()
+            messages.success(request, "Project Sold", extra_tags="alert-success")
             return redirect("project_sale_detail", id=id)
 
 

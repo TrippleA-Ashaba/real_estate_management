@@ -1,0 +1,16 @@
+{% load static %}
+
+<!-- item-->
+<div class="dropdown-header noti-title">
+	<h5 class="text-overflow mb-2">
+		Found <span class="text-danger">{{projects|length}}</span> results
+	</h5>
+</div>
+
+{% for project in projects %}
+<!-- item-->
+<a href="{% url 'project_detail' project.id %}" class="dropdown-item notify-item">
+	<i class="uil-notes font-16 me-1"></i>
+	<span>{{ project }}</span>
+</a>
+{% endfor %}

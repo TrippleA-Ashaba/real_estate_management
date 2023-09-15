@@ -363,3 +363,19 @@ def select_property_status(request):
         projects = projects.filter(status=status)
     context = {"projects": projects}
     return render(request, "core/partials/projects_table.html", context)
+
+
+def navbar_search(request):
+    business = get_object_or_404(Business, admin__user=request.user)
+    search = request.GET.get("navbar_search")
+    projects = Project.objects.filter(business=business)
+
+    if search:
+        projects = projects.filter(
+            Q(name__icontains=search)
+            | Q(description__icontains=search)
+            | Q(location__icontains=search)
+            | Q(status__icontains=search)
+        )
+    context = {"navbar_search": search, "projects": projects}
+    return render(request, "core/partials/navbar_search.html", context)

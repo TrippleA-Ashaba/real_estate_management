@@ -20,6 +20,7 @@ from .views import (
     projects,
     search_project,
     select_property_status,
+    navbar_search,
 )
 
 urlpatterns = [
@@ -50,4 +51,5 @@ urlpatterns = [
     path(
         "select_property_status/", select_property_status, name="select_property_status"
     ),
+    path("navbar_search/", navbar_search, name="navbar_search"),
 ]

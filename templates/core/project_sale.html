@@ -140,7 +140,8 @@
 								<div class="my-4 d-flex align-items-center justify-content-between">
 									<div>
 										<button
-											class="btn btn-primary {% if not customer %}disabled{% endif %}">
+											class="btn btn-primary {% if not customer %}disabled{% endif %}"
+											onclick="return confirm('Are you sure?')">
 											Sell
 										</button>
 									</div>
